@@ -10,16 +10,17 @@ const Wordbox = ({ word, onFinish, active, onMistake }) => {
       const handleKeyUp = (event) => {
         setLettersLeft((prevLettersLeft) => {
           console.log('klávesa ' + event.key);
-          if (prevLettersLeft.length === 1) {
+
+          const firstLetter = prevLettersLeft.charAt(0).toLowerCase();
+          if (prevLettersLeft.length === 1 && firstLetter === event.key) {
+            setMistake(false);
             onFinish();
-            //console.log('OnFinish aktivní');
+
             return prevLettersLeft;
           }
 
-          const firstLetter = prevLettersLeft.charAt(0).toLowerCase();
           if (firstLetter === event.key) {
             setMistake(false);
-
             return prevLettersLeft.slice(1);
           } else {
             onMistake();
