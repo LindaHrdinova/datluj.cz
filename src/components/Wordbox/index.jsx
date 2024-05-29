@@ -1,43 +1,45 @@
 import React, { useState, useEffect } from 'react';
 import './style.css';
 
-const Wordbox = ({ word, onFinish }) => {
+const Wordbox = ({ word, onFinish, active }) => {
   const [lettersLeft, setLettersLeft] = useState(word);
   const [mistake, setMistake] = useState(false);
 
   useEffect(() => {
-    const handleKeyUp = (event) => {
-      setLettersLeft((prevLettersLeft) => {
-        console.log('klávesa ' + event.key);
-        if (prevLettersLeft.length === 1) {
-          onFinish();
-          console.log('OnFinish aktivní');
+    if (active) {
+      const handleKeyUp = (event) => {
+        setLettersLeft((prevLettersLeft) => {
+          console.log('klávesa ' + event.key);
+          if (prevLettersLeft.length === 1) {
+            onFinish();
+            //console.log('OnFinish aktivní');
+            return prevLettersLeft;
+          }
+
+          const firstLetter = prevLettersLeft.charAt(0).toLowerCase();
+          if (firstLetter === event.key) {
+            setMistake(false);
+            return prevLettersLeft.slice(1);
+          } else {
+            setMistake(true);
+          }
+
           return prevLettersLeft;
-        }
+        });
+      };
 
-        const firstLetter = prevLettersLeft.charAt(0).toLowerCase();
-        if (firstLetter === event.key) {
-        }
+      document.addEventListener('keyup', handleKeyUp);
 
-        if (event.key.toLowerCase() === firstLetter) {
-          setMistake(false);
-          return prevLettersLeft.slice(1);
-        } else {
-          setMistake(true);
-        }
+      // Funkce Cleanup pro odstranění posluchače událostí
+      return () => {
+        document.removeEventListener('keyup', handleKeyUp);
+      };
+    }
+  }, [lettersLeft, active, onFinish]);
 
-        console.log(prevLettersLeft);
-        return prevLettersLeft;
-      });
-    };
-
-    document.addEventListener('keyup', handleKeyUp);
-
-    // Funkce Cleanup pro odstranění posluchače událostí
-    return () => {
-      document.removeEventListener('keyup', handleKeyUp);
-    };
-  }, [lettersLeft]);
+  useEffect(() => {
+    setLettersLeft(word);
+  }, [word]);
 
   return (
     <>
@@ -47,14 +49,5 @@ const Wordbox = ({ word, onFinish }) => {
     </>
   );
 };
-// {lettersLeft.length > 0 ? lettersLeft : 0}
-/*
-<>
-    {console.log(lettersLeft.length)}
-    {lettersLeft.length === 0 ? null : (
-    <div className="wordbox">{lettersLeft}</div>
-  )}
-</>
-*/
 
 export default Wordbox;

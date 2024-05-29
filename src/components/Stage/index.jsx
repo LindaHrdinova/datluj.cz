@@ -17,25 +17,33 @@ const generateWord = (size) => {
 };
 
 const Stage = () => {
-  const [words, setWords] = useState(['jahoda']);
-  const [mystakes, setMystakes] = useState(0);
+  const [words, setWords] = useState(['jahoda', 'ananas', 'meloun']);
+  const [mistakes, setMistakes] = useState(0);
 
   useEffect(() => {
     console.log('aktivní slovo = ' + words);
   }, [words]);
 
-  const handleFinish = (event) => {
+  const handleFinish = () => {
     console.log('Napsané slovo je správně');
-    const newWorld = generateWord(6);
-    setWords([newWorld]);
+    const newWord = generateWord(6);
+    setWords((prevWords) => {
+      prevWords.shift(); // Odstranění prvního slova ze seznamu
+      return [...prevWords, newWord]; // Přidání nového slova na konec seznamu
+    });
   };
 
   return (
     <div className="stage">
-      <div className="stage__mistakes">Chyb: {mystakes}</div>
+      <div className="stage__mistakes">Počet chyb: {mistakes}</div>
       <div className="stage__words">
-        {words.map((word) => (
-          <Wordbox word={word} key={word} onFinish={handleFinish} />
+        {words.map((word, index) => (
+          <Wordbox
+            word={word}
+            key={index}
+            onFinish={handleFinish}
+            active={index === 0}
+          />
         ))}
       </div>
     </div>
