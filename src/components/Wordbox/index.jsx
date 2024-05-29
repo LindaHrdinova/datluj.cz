@@ -3,10 +3,12 @@ import './style.css';
 
 const Wordbox = ({ word, onFinish }) => {
   const [lettersLeft, setLettersLeft] = useState(word);
+  const [mistake, setMistake] = useState(false);
 
   useEffect(() => {
     const handleKeyUp = (event) => {
       setLettersLeft((prevLettersLeft) => {
+        console.log('klávesa ' + event.key);
         if (prevLettersLeft.length === 1) {
           onFinish();
           console.log('OnFinish aktivní');
@@ -14,9 +16,16 @@ const Wordbox = ({ word, onFinish }) => {
         }
 
         const firstLetter = prevLettersLeft.charAt(0).toLowerCase();
-        if (event.key.toLowerCase() === firstLetter) {
-          return prevLettersLeft.slice(1);
+        if (firstLetter === event.key) {
         }
+
+        if (event.key.toLowerCase() === firstLetter) {
+          setMistake(false);
+          return prevLettersLeft.slice(1);
+        } else {
+          setMistake(true);
+        }
+
         console.log(prevLettersLeft);
         return prevLettersLeft;
       });
@@ -30,7 +39,13 @@ const Wordbox = ({ word, onFinish }) => {
     };
   }, [lettersLeft]);
 
-  return <div className="wordbox">{lettersLeft}</div>;
+  return (
+    <>
+      <div className={mistake ? 'wordbox wordbox--mistake' : 'wordbox'}>
+        {lettersLeft}
+      </div>
+    </>
+  );
 };
 // {lettersLeft.length > 0 ? lettersLeft : 0}
 /*
