@@ -33,6 +33,10 @@ const Stage = () => {
     });
   };
 
+  const handleMistake = () => {
+    setMistakes((prevMistakes) => prevMistakes + 1);
+  };
+
   return (
     <div className="stage">
       <div className="stage__mistakes">Počet chyb: {mistakes}</div>
@@ -42,6 +46,7 @@ const Stage = () => {
             word={word}
             key={index}
             onFinish={handleFinish}
+            onMistake={handleMistake}
             active={index === 0}
           />
         ))}
